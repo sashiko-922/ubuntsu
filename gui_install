@@ -1,0 +1,11 @@
+#標準的なUbuntu Desktop環境（GNOME）
+sudo apt update
+sudo apt install ubuntu-desktop
+
+#軽量なGUI：Xfce（Xubuntu）
+sudo apt update
+sudo apt install xubuntu-desktop
+
+#軽量なGUI：Xfce（Xubuntu）
+sudo apt update
+sudo apt install lubuntu-desktop
