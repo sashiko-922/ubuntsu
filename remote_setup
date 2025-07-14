@@ -1,0 +1,74 @@
+# Ubuntu Server に RDP 接続するためのセットアップ手順（VirtualBox + Windows）
+
+# 目的
+# Windowsのリモートデスクトップ（RDP）でVirtualBox上のUbuntu ServerにGUIアクセスする。
+
+# 全体手順
+# 1. UbuntuにGUI（Xfce）をインストール
+# 2. xrdpをインストール・設定
+# 3. VirtualBoxネットワークをブリッジアダプターに変更
+# 4. UbuntuのIPアドレス確認
+# 5. WindowsからRDP接続
+
+# 1. UbuntuにGUI環境をインストール
+
+# 以下をUbuntuのターミナルで実行してください。
+sudo apt update
+sudo apt install xfce4 -y
+echo "startxfce4" > ~/.xsession
+
+# 2. xrdpのインストールと起動
+
+# 以下を実行し、xrdpをインストールしてサービスを有効化します。
+sudo apt install xrdp -y
+sudo systemctl enable xrdp
+sudo systemctl start xrdp
+
+# 必要に応じてファイアウォールでポートを開放します。
+sudo ufw allow 3389/tcp
+
+# 3. VirtualBoxでブリッジアダプターに設定変更
+
+# 仮想マシンをシャットダウンします。
+
+# VirtualBoxマネージャーで対象仮想マシンを右クリックし「設定」を開きます。
+
+# 「ネットワーク」→「アダプター1」を選択します。
+
+# 「ネットワークアダプターを有効化」にチェックを入れます。
+
+# 「割り当て」を「ブリッジアダプター」に変更します。
+
+# 「名前」にはWindowsで使用中のネットワークアダプター（Wi-FiやEthernet）を選択します。
+
+# OKを押して設定を保存し、仮想マシンを起動します。
+
+# 4. UbuntuのIPアドレスを確認
+
+# 起動後、Ubuntuのターミナルで以下のコマンドを実行し、IPアドレスを確認します。
+ip a
+
+# inetに続く「192.168.x.x」などのIPをメモしてください。
+# もし「10.0.2.x」のままの場合は、ブリッジアダプター設定が正しく反映されていません。
+
+# 5. WindowsからRDP接続
+
+# Windowsキー + Rで「mstsc」と入力して起動します。
+
+# 「コンピューター」欄にUbuntuのIPアドレスを入力し、接続を開始します。
+
+# Ubuntuのユーザー名とパスワードを入力してログインしてください。
+
+# トラブルシューティング
+
+# IPが10.0.2.xのままの場合：
+# → VirtualBoxのネットワーク設定がNATのままのため、ブリッジアダプターに変更してください。
+
+# 黒画面でログインできない場合：
+# → xfce4が正しくインストールされているか、~/.xsessionに「startxfce4」が記述されているか確認してください。
+
+# 既にセッションがありますというメッセージが出た場合：
+# → Ubuntuで「sudo systemctl restart xrdp」を実行してxrdpサービスを再起動してください。
+
+# Windowsから接続できない場合：
+# → pingコマンドで疎通確認やファイアウォール設定の見直しをしてください。
